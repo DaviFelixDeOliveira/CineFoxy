@@ -1,54 +1,89 @@
 .wallContainer {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
+  background-color: #090909;
 }
 
 .columnsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  width: 110%;
+  position: absolute;
+  top: -10%;
+  left: -6%;
+  width: 112%;
   height: 120%;
-  margin-left: -5%;
-  margin-top: -5%;
-  transform: rotate(-3deg) scale(1.05); /* Leve inclinação cinematográfica inspirada nas referências */
-  opacity: 0.38;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: 100%;
+  gap: var(--space-3);
+  transform: rotate(-3deg) scale(1.04);
+  transform-origin: center center;
+  opacity: 0.72;
 }
 
-@media (min-width: 768px) {
+.tabletUp {
+  display: none;
+}
+
+.desktopOnly {
+  display: none;
+}
+
+@media (min-width: 640px) {
   .columnsGrid {
-    grid-template-columns: repeat(4, 1fr);
-    opacity: 0.45;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    opacity: 0.78;
+  }
+
+  .tabletUp {
+    display: block;
   }
 }
 
 @media (min-width: 1200px) {
   .columnsGrid {
-    grid-template-columns: repeat(6, 1fr);
-    opacity: 0.48;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    opacity: 0.82;
+  }
+
+  .desktopOnly {
+    display: block;
   }
 }
 
-/* Vignette e gradientes protetores de alto contraste */
+/* Vignette radial + gradiente escuro para garantir leitura confortável dos textos e botões */
 .vignetteOverlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(9, 9, 9, 0.4) 0%,
-    rgba(9, 9, 9, 0.85) 65%,
-    var(--bg-primary) 100%
-  );
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 64% 66% at 50% 50%,
+      rgba(9, 9, 9, 0.82) 0%,
+      rgba(9, 9, 9, 0.52) 55%,
+      rgba(9, 9, 9, 0.34) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(9, 9, 9, 0.74) 0%,
+      rgba(9, 9, 9, 0.16) 28%,
+      rgba(9, 9, 9, 0.2) 72%,
+      rgba(9, 9, 9, 0.9) 100%
+    );
   z-index: 1;
+}
+
+.bottomArc {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -26px;
+  height: 54px;
+  border-top: 2px solid rgba(255, 87, 34, 0.55);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 -8px 28px rgba(255, 87, 34, 0.25);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 87, 34, 0.16) 0%, transparent 70%);
+  z-index: 2;
 }
 
 .bottomFade {
@@ -56,7 +91,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 120px;
-  background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+  height: 76px;
+  background: linear-gradient(to top, rgba(9, 9, 9, 0.96) 0%, transparent 100%);
   z-index: 2;
 }

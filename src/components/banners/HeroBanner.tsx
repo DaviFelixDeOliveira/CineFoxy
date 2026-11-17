@@ -25,15 +25,26 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
       <AnimatedPosterWall />
 
       <div className={styles.contentWrapper}>
-        <div className={styles.brandBadge}>
+        <div className={`${styles.brandBadge} ${styles.staggerItem} ${styles.stagger1}`}>
           <Badge variant="primary">UNIVERSO CINEFOXY</Badge>
         </div>
 
-        <h1 className={styles.heroTitle}>{title}</h1>
-        <h2 className={styles.heroSubtitle}>{subtitle}</h2>
-        <p className={styles.heroDescription}>{description}</p>
+        <h1 className={`${styles.heroTitle} ${styles.staggerItem} ${styles.stagger2}`}>
+          <img
+            src="/img/logo.png"
+            alt={title}
+            className={styles.heroLogo}
+          />
+        </h1>
 
-        <div className={styles.actionGroup}>
+        <h2 className={`${styles.heroSubtitle} ${styles.staggerItem} ${styles.stagger3}`}>
+          {subtitle}
+        </h2>
+        <p className={`${styles.heroDescription} ${styles.staggerItem} ${styles.stagger4}`}>
+          {description}
+        </p>
+
+        <div className={`${styles.actionGroup} ${styles.staggerItem} ${styles.stagger5}`}>
           <Link to={ROUTES.MOVIES}>
             <Button size="lg" variant="primary" leftIcon={<Film size={18} />}>
               Explorar Filmes

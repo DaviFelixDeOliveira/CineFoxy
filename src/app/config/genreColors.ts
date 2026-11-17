@@ -163,6 +163,10 @@ const DEFAULT_GENRE_COLOR: GenreColorDefinition = {
   borderTint: 'rgba(255, 87, 34, 0.4)'
 };
 
+const GENRE_KEY_ALIASES: Record<string, string> = {
+  musica: 'musical'
+};
+
 /**
  * Normaliza uma string de gênero ou slug para chave de busca
  */
@@ -180,13 +184,15 @@ function normalizeKey(input: string): string {
  */
 export function getGenreColor(nameOrSlug?: string): GenreColorDefinition {
   if (!nameOrSlug) return DEFAULT_GENRE_COLOR;
-  
-  const key = normalizeKey(nameOrSlug);
-  if (GENRE_COLORS[key]) return GENRE_COLORS[key];
+
+  const rawKey = normalizeKey(nameOrSlug);
+  const resolvedKey = GENRE_KEY_ALIASES[rawKey] || rawKey;
+
+  if (GENRE_COLORS[resolvedKey]) return GENRE_COLORS[resolvedKey];
 
   // Busca por correspondência no nome
   const found = Object.values(GENRE_COLORS).find(
-    (g) => normalizeKey(g.name) === key || g.slug === key
+    (g) => normalizeKey(g.name) === resolvedKey || g.slug === resolvedKey
   );
 
   return found || DEFAULT_GENRE_COLOR;

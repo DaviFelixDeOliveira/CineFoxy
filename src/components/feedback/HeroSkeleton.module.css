@@ -17,7 +17,46 @@
   }
 }
 
+.bgGrid {
+  position: absolute;
+  inset: -6%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  transform: rotate(-3deg) scale(1.04);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .bgGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .bgGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.bgPoster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-md);
+}
+
+.bgScrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, var(--surface) 0%, transparent 90%);
+  opacity: 0.88;
+  pointer-events: none;
+}
+
 .contentWrapper {
+  position: relative;
+  z-index: 2;
   max-width: 720px;
   width: 100%;
   padding: var(--space-8) var(--space-4);
@@ -28,44 +67,55 @@
 }
 
 .badgeShape {
-  width: 140px;
+  width: 148px;
   height: 24px;
   border-radius: var(--radius-sm);
 }
 
-.titleShape {
-  width: 65%;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  margin-bottom: var(--space-2);
+.logoShape {
+  width: 210px;
+  height: 142px;
+  border-radius: var(--radius-md);
+}
+
+@media (min-width: 768px) {
+  .logoShape {
+    width: 268px;
+    height: 180px;
+  }
 }
 
 .subShape {
-  width: 45%;
-  height: 24px;
+  width: 260px;
+  max-width: 75%;
+  height: 22px;
   border-radius: var(--radius-sm);
 }
 
 .descShape1 {
-  width: 80%;
+  width: 82%;
+  max-width: 520px;
   height: 16px;
   border-radius: var(--radius-sm);
 }
 
 .descShape2 {
   width: 60%;
+  max-width: 380px;
   height: 16px;
   border-radius: var(--radius-sm);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .buttonsShape {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: var(--space-4);
 }
 
 .buttonPlaceholder {
-  width: 160px;
-  height: 48px;
+  width: 164px;
+  height: 46px;
   border-radius: var(--radius-md);
 }

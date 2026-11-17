@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { LayoutGrid, Rows } from 'lucide-react';
+import { LayoutGrid, Rows, Tv } from 'lucide-react';
 import { MediaRow } from '@/components/sections/MediaRow';
 import { MediaGrid } from '@/components/sections/MediaGrid';
+import { PageLoading } from '@/components/feedback/PageLoading';
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { OfflineState } from '@/components/feedback/OfflineState';
+import { useAsyncViewState } from '@/hooks/useAsyncViewState';
+import type { AsyncViewStatus } from '@/hooks/useAsyncViewState';
 import { CINEFOXY_CATEGORIES } from '@/types/category';
 import type { MediaItem } from '@/types/media';
 import styles from '@/features/movies/MoviesPage.module.css';
@@ -18,7 +24,11 @@ const DEMO_SERIES: MediaItem[] = [
   { id: 's-8', title: 'Código de Honra', overview: '', posterUrl: '', type: 'series', releaseYear: 2024, rating: 8.4, genres: ['Crime'] }
 ];
 
-export const SeriesPage: React.FC = () => {
+export interface SeriesPageProps {
+  forcedStatus?: AsyncViewStatus;
+}
+
+export const SeriesPage: React.FC<SeriesPageProps> = ({ forcedStatus }) => {
   const [viewMode, setViewMode] = useState<'rows' | 'grid'>('rows');
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('popularity');
@@ -28,8 +38,49 @@ export const SeriesPage: React.FC = () => {
     return item.genres?.includes(selectedGenre);
   });
 
+  const { status, error, retry } = useAsyncViewState({
+    hasData: DEMO_SERIES.length > 0,
+    forcedStatus
+  });
+
+  if (status === 'loading') {
+    return (
+      <div className="pageTransition">
+        <PageLoading variant="series" viewMode={viewMode} />
+      </div>
+    );
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className="pageTransition">
+        <OfflineState onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="pageTransition">
+        <ErrorState error={error} onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'empty') {
+    return (
+      <div className="pageTransition">
+        <EmptyState
+          icon={<Tv size={32} />}
+          title="Nenhuma série disponível"
+          description="Não há séries disponíveis nesta seleção no momento."
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="pageTransition">
+    <div className="pageTransition fadeIn">
       <div className={styles.header}>
         <div className={styles.titleArea}>
           <h1 className={styles.title}>Catálogo de Séries</h1>
@@ -110,7 +161,15 @@ export const SeriesPage: React.FC = () => {
             </select>
           </div>
 
-          <MediaGrid items={filteredSeries} />
+          {filteredSeries.length > 0 ? (
+            <MediaGrid items={filteredSeries} />
+          ) : (
+            <EmptyState
+              icon={<Tv size={32} />}
+              title="Nenhuma série disponível"
+              description="Ajuste os filtros de gênero para visualizar outras séries do catálogo."
+            />
+          )}
         </div>
       )}
     </div>

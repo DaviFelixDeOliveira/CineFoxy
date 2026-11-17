@@ -21,8 +21,8 @@
   --overlay-bg: rgba(0, 0, 0, 0.75);
   --header-bg: rgba(9, 9, 9, 0.85);
 
-  --skeleton-base: #141414;
-  --skeleton-highlight: #222222;
+  --skeleton-base: #191919;
+  --skeleton-highlight: #292929;
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
@@ -44,7 +44,7 @@
   --overlay-bg: rgba(0, 0, 0, 0.5);
   --header-bg: rgba(245, 245, 245, 0.88);
 
-  --skeleton-base: #E5E5E5;
-  --skeleton-highlight: #F0F0F0;
+  --skeleton-base: #E2E2E6;
+  --skeleton-highlight: #F2F2F5;
   --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }

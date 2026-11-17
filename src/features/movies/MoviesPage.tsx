@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { LayoutGrid, Rows } from 'lucide-react';
+import { LayoutGrid, Rows, Film } from 'lucide-react';
 import { MediaRow } from '@/components/sections/MediaRow';
 import { MediaGrid } from '@/components/sections/MediaGrid';
+import { PageLoading } from '@/components/feedback/PageLoading';
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { OfflineState } from '@/components/feedback/OfflineState';
+import { useAsyncViewState } from '@/hooks/useAsyncViewState';
+import type { AsyncViewStatus } from '@/hooks/useAsyncViewState';
 import { CINEFOXY_CATEGORIES } from '@/types/category';
 import type { MediaItem } from '@/types/media';
 import styles from './MoviesPage.module.css';
@@ -18,7 +24,11 @@ const DEMO_MOVIES: MediaItem[] = [
   { id: 'm-8', title: 'O Violinista da Estação', overview: '', posterUrl: '', type: 'movie', releaseYear: 2023, rating: 8.1, genres: ['Drama'] }
 ];
 
-export const MoviesPage: React.FC = () => {
+export interface MoviesPageProps {
+  forcedStatus?: AsyncViewStatus;
+}
+
+export const MoviesPage: React.FC<MoviesPageProps> = ({ forcedStatus }) => {
   const [viewMode, setViewMode] = useState<'rows' | 'grid'>('rows');
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('popularity');
@@ -28,8 +38,49 @@ export const MoviesPage: React.FC = () => {
     return movie.genres?.includes(selectedGenre);
   });
 
+  const { status, error, retry } = useAsyncViewState({
+    hasData: DEMO_MOVIES.length > 0,
+    forcedStatus
+  });
+
+  if (status === 'loading') {
+    return (
+      <div className="pageTransition">
+        <PageLoading variant="movies" viewMode={viewMode} />
+      </div>
+    );
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className="pageTransition">
+        <OfflineState onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="pageTransition">
+        <ErrorState error={error} onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'empty') {
+    return (
+      <div className="pageTransition">
+        <EmptyState
+          icon={<Film size={32} />}
+          title="Nenhum filme encontrado"
+          description="Não há filmes disponíveis nesta seleção no momento."
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="pageTransition">
+    <div className="pageTransition fadeIn">
       <div className={styles.header}>
         <div className={styles.titleArea}>
           <h1 className={styles.title}>Catálogo de Filmes</h1>
@@ -111,7 +162,15 @@ export const MoviesPage: React.FC = () => {
             </select>
           </div>
 
-          <MediaGrid items={filteredMovies} />
+          {filteredMovies.length > 0 ? (
+            <MediaGrid items={filteredMovies} />
+          ) : (
+            <EmptyState
+              icon={<Film size={32} />}
+              title="Nenhum filme encontrado"
+              description="Ajuste os filtros de gênero para visualizar outros filmes do catálogo."
+            />
+          )}
         </div>
       )}
     </div>

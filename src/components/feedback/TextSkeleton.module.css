@@ -1,0 +1,32 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.line {
+  border-radius: var(--radius-sm);
+}
+
+.title {
+  height: 32px;
+}
+
+@media (min-width: 768px) {
+  .title {
+    height: 38px;
+  }
+}
+
+.subtitle {
+  height: 18px;
+}
+
+.body {
+  height: 15px;
+}
+
+.caption {
+  height: 12px;
+}

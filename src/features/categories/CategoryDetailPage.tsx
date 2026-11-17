@@ -2,7 +2,12 @@ import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Film } from 'lucide-react';
 import { MediaGrid } from '@/components/sections/MediaGrid';
+import { PageLoading } from '@/components/feedback/PageLoading';
 import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { OfflineState } from '@/components/feedback/OfflineState';
+import { useAsyncViewState } from '@/hooks/useAsyncViewState';
+import type { AsyncViewStatus } from '@/hooks/useAsyncViewState';
 import { CINEFOXY_CATEGORIES } from '@/types/category';
 import type { MediaTypeFilter } from '@/types/category';
 import type { MediaItem } from '@/types/media';
@@ -19,7 +24,11 @@ const SAMPLE_CATEGORY_ITEMS: MediaItem[] = [
   { id: 'cat-m-3', title: 'Chamas no Ártico', overview: '', posterUrl: '', type: 'movie', releaseYear: 2024, rating: 7.6, genres: ['Ação', 'Aventura'] }
 ];
 
-export const CategoryDetailPage: React.FC = () => {
+export interface CategoryDetailPageProps {
+  forcedStatus?: AsyncViewStatus;
+}
+
+export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({ forcedStatus }) => {
   const { slug } = useParams<{ slug: string }>();
   const [typeFilter, setTypeFilter] = useState<MediaTypeFilter>('all');
 
@@ -38,13 +47,46 @@ export const CategoryDetailPage: React.FC = () => {
     });
   }, [typeFilter]);
 
-  if (!category) {
+  const { status, error, retry } = useAsyncViewState({
+    hasData: Boolean(category),
+    forcedStatus
+  });
+
+  if (status === 'loading') {
+    return (
+      <div className="pageTransition">
+        <PageLoading variant="category-detail" genreSlug={category?.slug || slug} />
+      </div>
+    );
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className="pageTransition">
+        <OfflineState onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="pageTransition">
+        <ErrorState error={error} onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (!category || status === 'empty') {
     return (
       <div className="pageTransition">
         <EmptyState
           icon={<Film size={32} />}
-          title="Categoria não encontrada"
-          description="A categoria solicitada não existe ou foi movida."
+          title={category ? `Nenhum título em ${category.name}` : 'Categoria não encontrada'}
+          description={
+            category
+              ? 'Nenhum título disponível nesta categoria no momento.'
+              : 'A categoria solicitada não existe ou foi movida.'
+          }
           action={
             <Link to={ROUTES.CATEGORIES} style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>
               Voltar para Categorias
@@ -56,7 +98,7 @@ export const CategoryDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="pageTransition">
+    <div className="pageTransition fadeIn">
       <div
         className={styles.header}
         style={genreTheme ? ({ '--genre-header-color': genreTheme.hex, '--genre-header-rgb': genreTheme.rgb } as React.CSSProperties) : undefined}

@@ -1,0 +1,166 @@
+.container {
+  width: 100%;
+}
+
+.catalogHeader {
+  margin-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .catalogHeader {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.simpleHeader {
+  margin-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.categoryHeader {
+  margin-bottom: var(--space-8);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pageTitle {
+  width: 260px;
+  max-width: 80%;
+  height: 32px;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    height: 38px;
+  }
+}
+
+.pageSubtitle {
+  width: 420px;
+  max-width: 92%;
+  height: 16px;
+}
+
+.toggleBox {
+  width: 224px;
+  height: 38px;
+  border-radius: var(--radius-md);
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding: var(--space-3);
+  background-color: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+}
+
+.filterSelect {
+  width: 148px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+}
+
+.backLink {
+  width: 160px;
+  height: 18px;
+  margin-bottom: var(--space-2);
+}
+
+.genreBadge {
+  width: 112px;
+  height: 22px;
+  border-radius: var(--radius-full);
+}
+
+.segmentGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.segmentBtn {
+  width: 78px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+}
+
+.channelTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.channelTab {
+  width: 96px;
+  height: 34px;
+  border-radius: var(--radius-full);
+}
+
+.channelGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .channelGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .channelGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+@media (min-width: 1200px) {
+  .channelGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.searchBar {
+  width: 100%;
+  max-width: 640px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+}
+
+.sectionBlock {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  width: 220px;
+  height: 24px;
+}

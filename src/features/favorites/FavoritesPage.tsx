@@ -1,8 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { Bookmark } from 'lucide-react';
 import { MediaGrid } from '@/components/sections/MediaGrid';
+import { PageLoading } from '@/components/feedback/PageLoading';
 import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { OfflineState } from '@/components/feedback/OfflineState';
+import { useAsyncViewState } from '@/hooks/useAsyncViewState';
+import type { AsyncViewStatus } from '@/hooks/useAsyncViewState';
 import type { MediaItem } from '@/types/media';
+import styles from './FavoritesPage.module.css';
 
 // Dados demonstrativos de favoritos para teste visual da Fase 2
 const DEMO_FAVORITES: MediaItem[] = [
@@ -11,7 +17,11 @@ const DEMO_FAVORITES: MediaItem[] = [
   { id: 'fav-3', title: 'Crônicas do Cinema Silencioso', overview: '', posterUrl: '', type: 'movie', releaseYear: 2023, rating: 9.1, genres: ['Documentário'] }
 ];
 
-export const FavoritesPage: React.FC = () => {
+export interface FavoritesPageProps {
+  forcedStatus?: AsyncViewStatus;
+}
+
+export const FavoritesPage: React.FC<FavoritesPageProps> = ({ forcedStatus }) => {
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'series' | 'channel'>('all');
 
   const filteredItems = useMemo(() => {
@@ -21,87 +31,92 @@ export const FavoritesPage: React.FC = () => {
     });
   }, [filterType]);
 
+  const { status, error, retry } = useAsyncViewState({
+    hasData: DEMO_FAVORITES.length > 0,
+    forcedStatus
+  });
+
+  if (status === 'loading') {
+    return (
+      <div className="pageTransition">
+        <PageLoading variant="favorites" />
+      </div>
+    );
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className="pageTransition">
+        <OfflineState onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="pageTransition">
+        <ErrorState error={error} onRetry={retry} />
+      </div>
+    );
+  }
+
   return (
-    <div className="pageTransition">
-      <div style={{ marginBottom: 'var(--space-6)' }}>
-        <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 'var(--space-2)' }}>
-          Minha Lista
-        </h1>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>
-          Seus filmes, séries e produções favoritas reunidas em um único lugar.
+    <div className="pageTransition fadeIn">
+      <div className={styles.header}>
+        <h1 className={styles.title}>Minha Lista</h1>
+        <p className={styles.subtitle}>
+          Seus filmes, séries e canais favoritos reunidos em um único lugar.
         </p>
 
-        {/* Filtros Internos por Tipo */}
+        {/* Filtros Internos por Tipo: Todos, Filmes, Séries e Canais */}
         <div
-          style={{
-            display: 'flex',
-            gap: 'var(--space-2)',
-            marginTop: 'var(--space-4)',
-            backgroundColor: 'var(--surface-elevated)',
-            padding: '3px',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-default)',
-            width: 'fit-content'
-          }}
+          className={styles.filterGroup}
           role="group"
           aria-label="Filtrar favoritos por tipo"
         >
           <button
             type="button"
             onClick={() => setFilterType('all')}
-            style={{
-              padding: 'var(--space-2) var(--space-4)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 600,
-              backgroundColor: filterType === 'all' ? 'var(--brand-primary)' : 'transparent',
-              color: filterType === 'all' ? 'var(--brand-contrast)' : 'var(--text-secondary)',
-              cursor: 'pointer'
-            }}
+            aria-pressed={filterType === 'all'}
+            className={`${styles.filterBtn} ${filterType === 'all' ? styles.filterActive : ''}`}
           >
             Todos
           </button>
           <button
             type="button"
             onClick={() => setFilterType('movie')}
-            style={{
-              padding: 'var(--space-2) var(--space-4)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 600,
-              backgroundColor: filterType === 'movie' ? 'var(--brand-primary)' : 'transparent',
-              color: filterType === 'movie' ? 'var(--brand-contrast)' : 'var(--text-secondary)',
-              cursor: 'pointer'
-            }}
+            aria-pressed={filterType === 'movie'}
+            className={`${styles.filterBtn} ${filterType === 'movie' ? styles.filterActive : ''}`}
           >
             Filmes
           </button>
           <button
             type="button"
             onClick={() => setFilterType('series')}
-            style={{
-              padding: 'var(--space-2) var(--space-4)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 600,
-              backgroundColor: filterType === 'series' ? 'var(--brand-primary)' : 'transparent',
-              color: filterType === 'series' ? 'var(--brand-contrast)' : 'var(--text-secondary)',
-              cursor: 'pointer'
-            }}
+            aria-pressed={filterType === 'series'}
+            className={`${styles.filterBtn} ${filterType === 'series' ? styles.filterActive : ''}`}
           >
             Séries
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterType('channel')}
+            aria-pressed={filterType === 'channel'}
+            className={`${styles.filterBtn} ${filterType === 'channel' ? styles.filterActive : ''}`}
+          >
+            Canais
           </button>
         </div>
       </div>
 
-      {filteredItems.length > 0 ? (
-        <MediaGrid items={filteredItems} />
-      ) : (
+      {status === 'empty' || filteredItems.length === 0 ? (
         <EmptyState
           icon={<Bookmark size={32} />}
-          title="Nenhum item salvo nesta categoria"
-          description="Navegue pelo catálogo e adicione títulos à sua lista para encontrá-los facilmente."
+          title="Sua lista ainda está vazia"
+          description="Navegue pelo catálogo e adicione títulos ou canais à sua lista para encontrá-los facilmente."
         />
+      ) : (
+        <MediaGrid items={filteredItems} />
       )}
     </div>
   );

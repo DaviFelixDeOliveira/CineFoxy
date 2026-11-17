@@ -8,10 +8,17 @@ export interface HeroSkeletonProps {
 
 export const HeroSkeleton: React.FC<HeroSkeletonProps> = ({ className }) => {
   return (
-    <div className={`${styles.heroSkeleton} ${className || ''}`} aria-busy="true">
+    <section className={`${styles.heroSkeleton} ${className || ''}`} aria-busy="true" aria-label="Carregando destaque">
+      <div className={styles.bgGrid} aria-hidden="true">
+        {Array.from({ length: 12 }).map((_, idx) => (
+          <Skeleton key={`hero-bg-${idx}`} className={styles.bgPoster} />
+        ))}
+      </div>
+      <div className={styles.bgScrim} aria-hidden="true" />
+
       <div className={styles.contentWrapper}>
         <Skeleton className={styles.badgeShape} />
-        <Skeleton className={styles.titleShape} />
+        <Skeleton className={styles.logoShape} />
         <Skeleton className={styles.subShape} />
         <Skeleton className={styles.descShape1} />
         <Skeleton className={styles.descShape2} />
@@ -20,6 +27,6 @@ export const HeroSkeleton: React.FC<HeroSkeletonProps> = ({ className }) => {
           <Skeleton className={styles.buttonPlaceholder} />
         </div>
       </div>
-    </div>
+    </section>
   );
 };

@@ -1,15 +1,17 @@
-# CineFoxy — Arquitetura de Integração de Catálogo (TMDB e TVmaze)
+# CineFoxy — Arquitetura de Integração de Catálogo (TMDB)
 
 ## 1. Visão Geral
-*Documento de planejamento arquitetural para a Fase 3.*
+*Documento atualizado na Etapa 3.2 (Infraestrutura Segura).*
 
-O CineFoxy utilizará o **TMDB (The Movie Database)** como fonte primária de metadados para filmes e séries e o **TVmaze** como fonte secundária e complementar de informações para grades de episódios e séries.
+O CineFoxy utilizará o **TMDB (The Movie Database)** como fonte única dos catálogos na Fase 3, por meio do proxy seguro `/api/catalog` (`netlify/functions/catalog.ts`).
+
+**Escopo TVmaze:** O TVmaze está **fora do escopo da Fase 3 atual**. Nenhuma chamada, adaptador ou dependência do TVmaze é implementado nesta fase; eventual integração complementar para temporadas/episódios pertence às fases posteriores.
 
 ---
 
-## 2. Contratos de Adaptador
+## 2. Contratos de Adaptador (Etapas 3.3+)
 
-Todo adaptador implementará uma interface comum:
+Os futuros adaptadores implementarão contratos internos desacoplados dos schemas externos:
 ```typescript
 export interface CatalogProvider {
   name: string;
@@ -22,5 +24,7 @@ export interface CatalogProvider {
 
 ---
 
-## 3. Desacoplamento e Fallback
-Se uma chamada a um provedor secundário falhar, o provedor primário assume a responsabilidade sem que a interface do usuário seja interrompida.
+## 3. Critérios Editoriais Registrados (Para Etapas 3.3 / 3.6)
+- **Joias Escondidas — Filmes:** Nota mínima `7.6`; votos iniciais `150` (máx. 2 flexibilizações de 10%: `135` -> `120`); popularidade moderada obrigatória com teto provisório `popularity <= 35` (calibrado uma única vez na Etapa 3.3); excluir IDs de *Em Alta*; ocultar se `< 5` títulos válidos.
+- **Joias Escondidas — Séries:** Nota mínima `7.8`; votos iniciais `100` (máx. 2 flexibilizações de 10%: `90` -> `80`); popularidade moderada obrigatória com teto provisório `popularity <= 45` (calibrado uma única vez na Etapa 3.3); excluir IDs de *Em Alta*; ocultar se `< 5` títulos válidos.
+- **Atribuição TMDB (etapa posterior no Footer):** Incorporar ao `Footer` existente o texto oficial `"This product uses the TMDB API but is not endorsed or certified by TMDB."`, logotipo oficial aprovado do TMDB e link oficial, sem página exclusiva de créditos.

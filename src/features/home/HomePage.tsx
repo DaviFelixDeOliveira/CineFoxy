@@ -1,39 +1,19 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Film } from 'lucide-react';
 import { HeroBanner } from '@/components/banners/HeroBanner';
 import { MediaRow } from '@/components/sections/MediaRow';
-import { ContinueWatchingCard } from '@/components/cards/ContinueWatchingCard';
+import { CategoryCard } from '@/components/cards/CategoryCard';
+import { PageLoading } from '@/components/feedback/PageLoading';
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { OfflineState } from '@/components/feedback/OfflineState';
+import { useAsyncViewState } from '@/hooks/useAsyncViewState';
+import type { AsyncViewStatus } from '@/hooks/useAsyncViewState';
+import { CINEFOXY_CATEGORIES } from '@/types/category';
+import { ROUTES } from '@/app/config/constants';
 import type { MediaItem } from '@/types/media';
-import type { ContinueWatchingItem } from '@/components/cards/ContinueWatchingCard';
 import styles from './HomePage.module.css';
-
-// Dados demonstrativos estruturados para a Fase 2 (curadoria inicial)
-const DEMO_CONTINUE_WATCHING: ContinueWatchingItem[] = [
-  {
-    media: {
-      id: 'cw-1',
-      title: 'A Noite das Raposas Estelares',
-      overview: 'Uma aventura cinematográfica no coração da galáxia.',
-      posterUrl: '',
-      type: 'movie',
-      releaseYear: 2024
-    },
-    progressPercent: 45,
-    timeRemainingLabel: '52 min restantes'
-  },
-  {
-    media: {
-      id: 'cw-2',
-      title: 'Crônicas do Horizonte',
-      overview: 'Série sobre viagens temporais e mistérios.',
-      posterUrl: '',
-      type: 'series',
-      releaseYear: 2023
-    },
-    progressPercent: 80,
-    episodeLabel: 'T1:E4',
-    timeRemainingLabel: '10 min restantes'
-  }
-];
 
 const DEMO_TRENDING: MediaItem[] = [
   { id: 'tr-1', title: 'O Enigma do Horizonte Laranja', overview: '', posterUrl: '', type: 'movie', releaseYear: 2024, rating: 8.4, genres: ['Ficção Científica'] },
@@ -68,25 +48,58 @@ const DEMO_HIDDEN_GEMS: MediaItem[] = [
   { id: 'gem-5', title: 'Retrato em Tons Claros', overview: '', posterUrl: '', type: 'movie', releaseYear: 2023, rating: 8.2, genres: ['Drama'] }
 ];
 
-export const HomePage: React.FC = () => {
+export interface HomePageProps {
+  forcedStatus?: AsyncViewStatus;
+}
+
+export const HomePage: React.FC<HomePageProps> = ({ forcedStatus }) => {
+  const { status, error, retry } = useAsyncViewState({
+    hasData: DEMO_TRENDING.length > 0,
+    forcedStatus
+  });
+
+  if (status === 'loading') {
+    return (
+      <div className="pageTransition">
+        <PageLoading variant="home" />
+      </div>
+    );
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className="pageTransition">
+        <OfflineState onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="pageTransition">
+        <ErrorState error={error} onRetry={retry} />
+      </div>
+    );
+  }
+
+  if (status === 'empty') {
+    return (
+      <div className="pageTransition">
+        <EmptyState
+          icon={<Film size={32} />}
+          title="Nenhum título em destaque no momento"
+          description="Explore as seções de filmes, séries ou categorias para descobrir produções disponíveis."
+        />
+      </div>
+    );
+  }
+
+  const featuredCategories = CINEFOXY_CATEGORIES.slice(0, 4);
+
   return (
-    <div className="pageTransition">
+    <div className="pageTransition fadeIn">
       {/* Hero Banner Cinematográfico com Animated Poster Wall */}
       <HeroBanner />
-
-      {/* Continuar Assistindo (Renderizado apenas quando houver dados) */}
-      {DEMO_CONTINUE_WATCHING.length > 0 && (
-        <section className={styles.continueSection} aria-label="Continuar assistindo">
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Continuar Assistindo</h2>
-          </div>
-          <div className={styles.continueGrid}>
-            {DEMO_CONTINUE_WATCHING.map((item) => (
-              <ContinueWatchingCard key={item.media.id} item={item} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Trilhos das Coleções Principais */}
       <MediaRow
@@ -112,6 +125,21 @@ export const HomePage: React.FC = () => {
         description="Produções de qualidade destacada fora do circuito massivo"
         items={DEMO_HIDDEN_GEMS}
       />
+
+      {/* Categorias em Destaque */}
+      <section className={styles.categoriesSection} aria-label="Categorias em destaque">
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Categorias em Destaque</h2>
+          <Link to={ROUTES.CATEGORIES} className={styles.seeAllLink}>
+            Ver todas
+          </Link>
+        </div>
+        <div className={styles.categoriesGrid}>
+          {featuredCategories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

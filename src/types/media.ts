@@ -17,6 +17,7 @@ export interface ChannelItem {
   id: string;
   name: string;
   logoUrl: string;
+  category?: string;
   isLive: boolean;
   currentProgram?: {
     title: string;

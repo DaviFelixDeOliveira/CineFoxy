@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PosterColumn.module.css';
 
 export interface PosterColumnProps {
@@ -14,8 +14,33 @@ export const PosterColumn: React.FC<PosterColumnProps> = ({
   durationSeconds = 45,
   className
 }) => {
-  // Duplicação para loop contínuo sem saltos perceptíveis
-  const duplicatedImages = [...images, ...images];
+  const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
+
+  const handleImageLoad = (key: string) => {
+    setLoadedMap((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+  };
+
+  const renderGroup = (groupKey: string) => (
+    <div className={styles.group}>
+      {images.map((src, index) => {
+        const imgKey = `${groupKey}-${index}`;
+        const isLoaded = Boolean(loadedMap[imgKey]);
+        return (
+          <div key={imgKey} className={styles.card}>
+            {!isLoaded && <div className={styles.cardPlaceholder} aria-hidden="true" />}
+            <img
+              src={src}
+              alt=""
+              className={`${styles.poster} ${isLoaded ? styles.posterLoaded : ''}`}
+              loading="eager"
+              decoding="async"
+              onLoad={() => handleImageLoad(imgKey)}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div className={`${styles.column} ${className || ''}`} aria-hidden="true">
@@ -23,17 +48,8 @@ export const PosterColumn: React.FC<PosterColumnProps> = ({
         className={`${styles.track} ${direction === 'up' ? styles.up : styles.down}`}
         style={{ animationDuration: `${durationSeconds}s` }}
       >
-        {duplicatedImages.map((src, index) => (
-          <div key={`${src}-${index}`} className={styles.card}>
-            <img
-              src={src}
-              alt=""
-              className={styles.poster}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        ))}
+        {renderGroup('a')}
+        {renderGroup('b')}
       </div>
     </div>
   );

@@ -2,7 +2,34 @@
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
+  framework = "vite"
+
+# 1. Rewrite interno para a Netlify Function (obrigatório antes do fallback SPA)
+[[redirects]]
+  from = "/api/catalog"
+  to = "/.netlify/functions/catalog"
+  status = 200
+
+# 2. Fallback SPA geral do React Router
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# 3. Cabeçalhos de Segurança e Content Security Policy (CSP)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-NZasksZ3qvcCgxJIvhhO39tYukrZyeuvyZ8JnXUPjXY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://image.tmdb.org; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"

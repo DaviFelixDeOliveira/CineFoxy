@@ -41,6 +41,9 @@ describe('Categorias e Genre Color System', () => {
     expect(getGenreColor('ficcao-cientifica').hex).toBe('#36B7C8');
     expect(getGenreColor('Mistério').hex).toBe('#5C6BC0');
     expect(getGenreColor('Guerra').hex).toBe('#6B705C');
+    expect(getGenreColor('musica').hex).toBe('#D47BA8');
+    expect(getGenreColor('Música').hex).toBe('#D47BA8');
+    expect(getGenreColor('musical').hex).toBe('#D47BA8');
     expect(getGenreColor('inexistente').hex).toBe('#FF5722'); // Fallback institucional Fox
   });
 
@@ -48,6 +51,9 @@ describe('Categorias e Genre Color System', () => {
     const gradient = getGenreGradient('acao');
     expect(gradient).toContain('239, 83, 80');
     expect(gradient).toContain('linear-gradient');
+
+    const musicGradient = getGenreGradient('musica');
+    expect(musicGradient).toContain('212, 123, 168');
   });
 
   it('deve renderizar o CategoryCard como link nativo acessível apontando para /categoria/:slug', () => {

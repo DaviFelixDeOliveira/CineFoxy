@@ -1,0 +1,272 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.banner {
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .banner {
+    height: 360px;
+  }
+}
+
+.backdrop {
+  width: 100%;
+  height: 100%;
+}
+
+.mainInfo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .mainInfo {
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+}
+
+.posterCol {
+  width: 180px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .posterCol {
+    width: 100%;
+  }
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-md);
+}
+
+.metaCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.title {
+  height: 36px;
+  width: 68%;
+}
+
+.techRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.techChip {
+  height: 16px;
+  width: 64px;
+}
+
+.genreRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.genreTag {
+  height: 26px;
+  width: 88px;
+  border-radius: var(--radius-full);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.primaryBtn {
+  width: 168px;
+  height: 44px;
+  border-radius: var(--radius-md);
+}
+
+.secondaryBtn {
+  width: 152px;
+  height: 44px;
+  border-radius: var(--radius-md);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  width: 190px;
+  height: 24px;
+}
+
+.castRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .castRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .castRow {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.castCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.castAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+}
+
+.castName {
+  height: 14px;
+  width: 80%;
+}
+
+.castRole {
+  height: 12px;
+  width: 60%;
+}
+
+.seasonHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .seasonHeader {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.seasonTabs {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.seasonTab {
+  width: 104px;
+  height: 36px;
+  border-radius: var(--radius-md);
+}
+
+.episodesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Player Skeleton */
+.playerContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.playerViewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--surface);
+  border: 1px solid var(--border-default);
+}
+
+.playerSurface {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.playerControlsBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, transparent 100%);
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+}
+
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.controlsGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.controlBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+}
+
+.timeLabel {
+  width: 84px;
+  height: 14px;
+}
+
+.playerMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.playerTitle {
+  width: 280px;
+  height: 24px;
+}
+
+.playerSubtitle {
+  width: 190px;
+  height: 14px;
+}
