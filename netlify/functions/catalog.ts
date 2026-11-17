@@ -1,14 +1,14 @@
 /**
  * CineFoxy — Netlify Function: Proxy Seguro de Catálogo (/api/catalog)
  *
- * Etapa 3.2 (Infraestrutura Segura):
+ * Etapa 3.3 (Integração TMDB):
  * - Recebe e valida requisições HTTP do frontend.
  * - Mantém TMDB_API_READ_ACCESS_TOKEN restrito ao ambiente server-side.
  * - Impede proxy aberto / SSRF por meio de whitelist estrita de ações e host.
  * - Define cabeçalhos separados para Netlify CDN (Netlify-CDN-Cache-Control)
  *   e navegador (Cache-Control), garantindo ausência de cache em erros e buscas.
  *
- * Nota de escopo: Nesta etapa (3.2), nenhuma chamada externa real ao TMDB é executada.
+ * As consultas ao TMDB são executadas exclusivamente no servidor, usando token Bearer privado.
  */
 
 export type CatalogAction = 'status' | 'trending' | 'discover' | 'search' | 'genres';
@@ -539,25 +539,80 @@ export default async function handler(request: Request): Promise<Response> {
       {
         ok: true,
         service: 'cinefoxy-catalog-proxy',
-        stage: '3.2',
-        upstreamCallsEnabled: false,
+        stage: '3.3',
+        upstreamCallsEnabled: true,
         credentialsConfigured: Boolean(token)
       },
       'status'
     );
   }
 
-  // Etapa 3.2: Infraestrutura validada sem acionar chamadas reais ao TMDB.
-  return createJsonResponse(
-    501,
-    {
+  if (!token) {
+    return createJsonResponse(503, {
       ok: false,
       error: {
-        code: 'ERR_STAGE_NOT_IMPLEMENTED',
-        message: 'Infraestrutura /api/catalog preparada (Etapa 3.2). Integração TMDB prevista para a Etapa 3.3.',
+        code: 'ERR_CREDENTIALS_MISSING',
+        message: 'O catálogo está temporariamente indisponível.',
         canRetry: false
       }
-    },
-    'error'
-  );
+    }, 'error');
+  }
+
+  const params = validation.params;
+  let upstreamPath: string;
+  let cacheCategory: CacheCategory = 'listings';
+  const upstreamParams: Record<string, string | number | boolean | undefined> = {
+    language: params.language,
+    page: params.page
+  };
+
+  if (params.action === 'trending') {
+    const mediaType = params.type === 'series' ? 'tv' : params.type;
+    upstreamPath = `/trending/${mediaType}/week`;
+  } else if (params.action === 'genres') {
+    const mediaType = params.type === 'series' ? 'tv' : params.type === 'all' ? 'movie' : params.type;
+    upstreamPath = `/genre/${mediaType}/list`;
+    cacheCategory = 'genres';
+  } else if (params.action === 'search') {
+    const mediaType = params.type === 'series' ? 'tv' : params.type;
+    upstreamPath = `/search/${mediaType}`;
+    upstreamParams.query = params.query;
+    cacheCategory = 'search';
+  } else {
+    const mediaType = params.type === 'series' ? 'tv' : params.type;
+    upstreamPath = `/discover/${mediaType}`;
+    upstreamParams.sort_by = params.sortBy || 'popularity.desc';
+    upstreamParams.with_genres = params.withGenres;
+    upstreamParams.with_keywords = params.withKeywords;
+    upstreamParams['vote_average.gte'] = params.voteAverageGte;
+    upstreamParams['vote_count.gte'] = params.voteCountGte;
+    upstreamParams['primary_release_date.gte'] = params.dateGte;
+    upstreamParams['primary_release_date.lte'] = params.dateLte;
+  }
+
+  try {
+    const upstream = buildTmdbUpstreamRequest(upstreamPath, upstreamParams, token);
+    const upstreamResponse = await fetch(upstream.url, upstream.init);
+    if (!upstreamResponse.ok) {
+      return normalizeUpstreamError(
+        upstreamResponse.status,
+        upstreamResponse.headers.get('retry-after')
+      );
+    }
+
+    const payload = await upstreamResponse.json() as Record<string, unknown>;
+    return createJsonResponse(200, { ok: true, data: payload }, cacheCategory);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      return normalizeUpstreamError(504);
+    }
+    return createJsonResponse(502, {
+      ok: false,
+      error: {
+        code: 'ERR_UPSTREAM_UNAVAILABLE',
+        message: 'Não foi possível consultar o catálogo agora.',
+        canRetry: true
+      }
+    }, 'error');
+  }
 }
