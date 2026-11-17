@@ -14,7 +14,7 @@ import {
   mapProxyHttpError
 } from '@/services/http/catalogProxyContract';
 
-describe('Infraestrutura Segura Fase 3.2 — Proxy /api/catalog', () => {
+describe('Infraestrutura Segura Fase 3.3 — Proxy /api/catalog com TMDB', () => {
   const originalToken = process.env.TMDB_API_READ_ACCESS_TOKEN;
 
   afterEach(() => {
@@ -41,8 +41,8 @@ describe('Infraestrutura Segura Fase 3.2 — Proxy /api/catalog', () => {
     expect(json).toEqual({
       ok: true,
       service: 'cinefoxy-catalog-proxy',
-      stage: '3.2',
-      upstreamCallsEnabled: false,
+      stage: '3.3',
+      upstreamCallsEnabled: true,
       credentialsConfigured: true
     });
     expect(bodyText).not.toContain('secret-test-token-value-123');
@@ -109,7 +109,8 @@ describe('Infraestrutura Segura Fase 3.2 — Proxy /api/catalog', () => {
     }
   });
 
-  it('deve aceitar parâmetros válidos de catálogo na Etapa 3.2 retornando 501 sem disparar chamadas ao TMDB', async () => {
+  it('deve aceitar parâmetros válidos e retornar erro seguro quando a credencial não estiver configurada', async () => {
+    delete process.env.TMDB_API_READ_ACCESS_TOKEN;
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
     const req = new Request(
@@ -119,8 +120,9 @@ describe('Infraestrutura Segura Fase 3.2 — Proxy /api/catalog', () => {
     const res = await handler(req);
     const json = await res.json();
 
-    expect(res.status).toBe(501);
-    expect(json.error.code).toBe('ERR_STAGE_NOT_IMPLEMENTED');
+    expect(res.status).toBe(503);
+    expect(json.error.code).toBe('ERR_CREDENTIALS_MISSING');
+    expect(json.error.message).not.toContain('TMDB_API_READ_ACCESS_TOKEN');
     expect(res.headers.get('Netlify-CDN-Cache-Control')).toBe('no-store');
     expect(res.headers.get('Cache-Control')).toBe('no-store');
     expect(fetchSpy).not.toHaveBeenCalled();
