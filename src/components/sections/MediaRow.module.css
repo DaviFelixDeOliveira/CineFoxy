@@ -1,0 +1,136 @@
+.rowContainer {
+  position: relative;
+  margin-bottom: var(--space-8);
+  width: 100%;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1), transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hidden,
+  .revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-1);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: var(--text-xl);
+  }
+}
+
+.description {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.controls {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .controls {
+    display: flex;
+  }
+}
+
+.arrowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.arrowButton:hover:not(:disabled) {
+  background-color: var(--brand-primary);
+  color: var(--brand-contrast);
+  border-color: var(--brand-primary);
+}
+
+.arrowButton:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.arrowButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.scrollArea {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: var(--space-2) var(--space-1) var(--space-4);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.itemWrapper {
+  flex: 0 0 calc(50% - var(--space-3));
+  scroll-snap-align: start;
+}
+
+@media (min-width: 600px) {
+  .itemWrapper {
+    flex: 0 0 calc(33.333% - var(--space-3));
+  }
+}
+
+@media (min-width: 900px) {
+  .itemWrapper {
+    flex: 0 0 calc(25% - var(--space-3));
+  }
+}
+
+@media (min-width: 1200px) {
+  .itemWrapper {
+    flex: 0 0 calc(20% - var(--space-4));
+  }
+}

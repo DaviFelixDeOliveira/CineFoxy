@@ -1,0 +1,100 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: transparent;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-normal);
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card:hover .thumbWrapper {
+    border-color: var(--brand-hover);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 87, 34, 0.2);
+  }
+
+  .card:hover .channelName {
+    color: var(--brand-hover);
+  }
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.thumbWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--surface-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-default);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.logo {
+  max-width: 65%;
+  max-height: 65%;
+  object-fit: contain;
+  transition: transform var(--transition-normal);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .logo {
+    transform: scale(1.05);
+  }
+}
+
+.liveBadge {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 1;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-2);
+}
+
+.channelName {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.program {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .logo,
+  .thumbWrapper {
+    transition: none !important;
+    transform: none !important;
+  }
+}

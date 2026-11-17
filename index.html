@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#090909" />
+    <meta name="description" content="CineFoxy — seu universo de entretenimento em filmes, séries e canais ao vivo." />
+    <link rel="icon" type="image/png" href="/img/logo.png" />
+    <title>CineFoxy — Filmes, Séries e Canais</title>
+    <!-- Script síncrono para prevenção de FOUC (Flash of Unstyled/Wrong Content) -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('cinefoxy_theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = (stored === 'dark' || (!stored && prefersDark) || (stored === 'system' && prefersDark)) ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

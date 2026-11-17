@@ -1,0 +1,62 @@
+.wallContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.columnsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  width: 110%;
+  height: 120%;
+  margin-left: -5%;
+  margin-top: -5%;
+  transform: rotate(-3deg) scale(1.05); /* Leve inclinação cinematográfica inspirada nas referências */
+  opacity: 0.38;
+}
+
+@media (min-width: 768px) {
+  .columnsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    opacity: 0.45;
+  }
+}
+
+@media (min-width: 1200px) {
+  .columnsGrid {
+    grid-template-columns: repeat(6, 1fr);
+    opacity: 0.48;
+  }
+}
+
+/* Vignette e gradientes protetores de alto contraste */
+.vignetteOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(9, 9, 9, 0.4) 0%,
+    rgba(9, 9, 9, 0.85) 65%,
+    var(--bg-primary) 100%
+  );
+  z-index: 1;
+}
+
+.bottomFade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+  z-index: 2;
+}

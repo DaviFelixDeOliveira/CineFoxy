@@ -1,0 +1,71 @@
+.heroSkeleton {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-10);
+  background-color: var(--surface);
+  border: 1px solid var(--border-default);
+}
+
+@media (min-width: 768px) {
+  .heroSkeleton {
+    min-height: 540px;
+  }
+}
+
+.contentWrapper {
+  max-width: 720px;
+  width: 100%;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.badgeShape {
+  width: 140px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+}
+
+.titleShape {
+  width: 65%;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-2);
+}
+
+.subShape {
+  width: 45%;
+  height: 24px;
+  border-radius: var(--radius-sm);
+}
+
+.descShape1 {
+  width: 80%;
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.descShape2 {
+  width: 60%;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+}
+
+.buttonsShape {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.buttonPlaceholder {
+  width: 160px;
+  height: 48px;
+  border-radius: var(--radius-md);
+}

@@ -1,0 +1,50 @@
+/* ==========================================================================
+   CineFoxy Tokens Semânticos — Temas Escuro e Claro
+   ========================================================================== */
+
+/* Tema Escuro (Padrão) */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #090909;
+  --surface: #141414;
+  --surface-elevated: #1E1E1E;
+  --border-default: #303030;
+  --border-focus: #FF5722;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A3A3A3;
+  --text-muted: #737373;
+  --focus-ring: #FF5722;
+
+  --status-error: #EF4444;
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --overlay-bg: rgba(0, 0, 0, 0.75);
+  --header-bg: rgba(9, 9, 9, 0.85);
+
+  --skeleton-base: #141414;
+  --skeleton-highlight: #222222;
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Tema Claro */
+[data-theme="light"] {
+  --bg-primary: #F5F5F5;
+  --surface: #FFFFFF;
+  --surface-elevated: #EBEBEB;
+  --border-default: #DDDDDD;
+  --border-focus: #E94B1B;
+  --text-primary: #171717;
+  --text-secondary: #666666;
+  --text-muted: #8C8C8C;
+  --focus-ring: #E94B1B;
+
+  --status-error: #DC2626;
+  --status-success: #059669;
+  --status-warning: #D97706;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --header-bg: rgba(245, 245, 245, 0.88);
+
+  --skeleton-base: #E5E5E5;
+  --skeleton-highlight: #F0F0F0;
+  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
