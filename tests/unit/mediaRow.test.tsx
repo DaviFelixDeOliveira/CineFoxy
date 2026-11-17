@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
 import { MediaRow } from '@/components/sections/MediaRow';
 import type { MediaItem } from '@/types/media';
+import styles from '@/components/sections/MediaRow.module.css';
 
 describe('Componente MediaRow', () => {
   const sampleItems: MediaItem[] = [
@@ -35,5 +36,6 @@ describe('Componente MediaRow', () => {
     expect(screen.getByText('Os mais populares')).toBeInTheDocument();
     expect(screen.getByText('Título 1')).toBeInTheDocument();
     expect(screen.getByText('Título 5')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Em Alta' }).closest('section')).not.toHaveClass(styles.hidden);
   });
 });
