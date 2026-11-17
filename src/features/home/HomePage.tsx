@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Film } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { HeroBanner } from '@/components/banners/HeroBanner';
 import { MediaRow } from '@/components/sections/MediaRow';
 import { CategoryCard } from '@/components/cards/CategoryCard';
@@ -60,8 +61,9 @@ export const HomePage: React.FC<HomePageProps> = ({ forcedStatus }) => {
   }, []);
 
   useEffect(() => {
+    if (forcedStatus) return;
     void loadCatalog();
-  }, [loadCatalog]);
+  }, [forcedStatus, loadCatalog]);
 
   if (forcedStatus === 'loading' || status === 'loading') {
     return <div className="pageTransition"><PageLoading variant="home" /></div>;
@@ -79,7 +81,7 @@ export const HomePage: React.FC<HomePageProps> = ({ forcedStatus }) => {
           icon={<Film size={32} />}
           title="Nenhum título em destaque no momento"
           description="Não encontramos produções para exibir agora. Tente novamente mais tarde."
-          action={<button type="button" onClick={() => void loadCatalog()}>Tentar novamente</button>}
+          action={<Button variant="primary" onClick={() => void loadCatalog()}>Tentar novamente</Button>}
         />
       </div>
     );
