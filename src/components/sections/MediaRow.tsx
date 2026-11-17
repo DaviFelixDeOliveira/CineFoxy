@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { MediaCard } from '@/components/cards/MediaCard';
 import type { MediaItem } from '@/types/media';
-import { useInView } from '@/hooks/useInView';
 import styles from './MediaRow.module.css';
 
 export interface MediaRowProps {
@@ -23,7 +22,6 @@ export const MediaRow: React.FC<MediaRowProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const { ref: sectionRef, isInView } = useInView<HTMLElement>({ rootMargin: '60px', triggerOnce: true });
 
   const checkScroll = () => {
     if (!scrollRef.current) return;
@@ -54,8 +52,7 @@ export const MediaRow: React.FC<MediaRowProps> = ({
 
   return (
     <section
-      ref={sectionRef}
-      className={`${styles.rowContainer} ${isInView ? styles.revealed : styles.hidden} ${className || ''}`}
+      className={`${styles.rowContainer} ${className || ''}`}
       aria-label={title}
     >
       <div className={styles.header}>
