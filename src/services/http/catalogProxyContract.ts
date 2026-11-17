@@ -1,7 +1,7 @@
 import type { AppError } from '@/types/error';
 import { COMMON_ERRORS, resolveError } from '@/services/error/errorCatalog';
 
-export const API_CATALOG_ENDPOINT = '/api/catalog' as const;
+export const API_CATALOG_ENDPOINT = '/.netlify/functions/catalog' as const;
 
 export type CatalogProxyAction = 'status' | 'trending' | 'discover' | 'search' | 'genres';
 export type CatalogProxyMediaType = 'movie' | 'series' | 'all';
